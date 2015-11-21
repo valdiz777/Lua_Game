@@ -24,17 +24,16 @@ function Maze:Backtracker(maze)
     if #directions == 0 then
       if #stack > 0 then
         cell = stack:pop()
-        goto countinue
+        --goto countinue only works for 5.2
       else break end -- Stack is empty and there are no possible directions - maze is generated
-    end
- 
-    -- Choosing a random direction from a list of possible direction and carving
-    stack:push(cell)
-    local dir = directions[math.random(#directions)]
-    maze[cell.y][cell.x][dir.name]:open() 
-    cell = dir.pos
- 
-    ::countinue::
+    else
+		-- Choosing a random direction from a list of possible direction and carving
+		stack:push(cell)
+		local dir = directions[math.random(#directions)]
+		maze[cell.y][cell.x][dir.name]:open() 
+		cell = dir.pos
+	end
+    --::countinue:: only works for 5.2
   end
  
   maze:resetVisited()
