@@ -1,6 +1,8 @@
 # Lua_Game
 Creating repo
 
+How to use maze algorithm
+=============================
 This is an implementation of the recursive backtracker maze generation algorithm found at Think Labyrinth! but without recursion :)
 This solution consists of four files:
 stack.lua - very simple implementation of the LIFO container, used for stacking the travel path
