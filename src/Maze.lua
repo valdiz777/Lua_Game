@@ -82,6 +82,7 @@ function Maze:Create(closed)
       end
     end
   end
+
   --[[  Maze generation depends on the random seed, so you will get exactly
 
       identical maze every time you pass exactly identical seed ]]
@@ -90,54 +91,50 @@ function Maze:Create(closed)
 end
 
 function Maze:Prepare(wall, passage)
-  wall = wall or "#"
+  wall = wall or "x"
   passage = passage or " "
   local result = ""
 
   local verticalBorder = ""
   for i = 1, #self.map[1] do
     --check if  wall or passage for our borders
-    local truthVal = (self.map[1][i].north:isClosed()) and wall or passage;
-    if (truthVal == wall) then
+    if (self.map[1][i].north:isClosed()) then
       verticalBorder = verticalBorder .. wall .. wall;
       self.map[1][i].id = "wall";
-    end
-    if (truthVal == passage) then
+    else
       verticalBorder = verticalBorder .. wall .. passage;
       self.map[1][i].id = "passage";
     end
   end
+  verticalBorder = verticalBorder .. wall;
+  result = result .. verticalBorder .. "\n";
 
-  verticalBorder = verticalBorder .. wall
-  result = result .. verticalBorder .. "\n"
-
+  --Check for the rest of the map
   for y, row in ipairs(self.map) do
     local line = row[1].west:isClosed() and wall or passage;
     local underline = wall;
-    local truthVal = line;
-    local truthVal2 = underline;
     for x, cell in ipairs(row) do
-      truthVal = (cell.east:isClosed())  and wall or passage;
-      if (truthVal == wall) then
+      if (cell.east:isClosed()) then
         line = line .. " " .. wall;
-      --self.map_id[1][i] = "wall"; Still working on this
-      end
-      if (truthVal == passage) then
+        self.map[y][x].id = "wall";
+      else
         line = line .. " " .. passage;
-      --self.map_id[1][i] = "passage"; Still working on this
+        self.map[y][x].id = "passage";
       end
 
-      truthVal = (cell.south:isClosed())  and wall or passage;
-      if (truthVal == wall) then
-        underline = line .. " " .. wall;
+      if (cell.south:isClosed()) then
+        underline = underline .. wall .. wall;
+        self.map[y][x].id = "wall"; 
+      else
+        underline = underline .. passage .. wall;
+        self.map[y][x].id = "passage"; 
       end
-
-      if (truthVal == passage) then
-        underline = line .. " " .. passage;
-      end
+      --line = line .. " " .. (cell.east:isClosed() and wall or passage)
+      --underline = underline .. (cell.south:isClosed() and wall or passage) .. wall
     end
     result = result .. line .. "\n" .. underline .. "\n";
   end
+
   return result
 end
 
@@ -157,29 +154,29 @@ function Maze:Spawn(group)
   local sr, sc = self.maze.row.count, 1;
 
   for i=1, Maze.maze.col.count do
-    if Maze.maze[sr][i].id == "start" then
+    if self.map[sr][i].id == "start" then
       sc = i;
       print("start: ("..sr..","..sc..")\n\n");
     end
   end
 
   local row, col = 0,0;
-  for i=1,self.maze.row.count do
-    for j=1,self.maze.col.count do
-      self.maze[i][j].sprite = display.newSprite(self.sprite.sheet, self.sheet_sequence);
-      self.maze[i][j].sprite.anchorX = 0.5;
-      self.maze[i][j].sprite.anchorY = 0.5;
-      self.maze[i][j].sprite.x = (j-1)*size;
-      self.maze[i][j].sprite.y = (i-1)*size;
-      self.maze.group:insert( self.maze[i][j].sprite );
+  for i=1,self.map.row.count do
+    for j=1,self.map.col.count do
+      self.map[i][j].sprite = display.newSprite(self.sprite.sheet, self.sheet_sequence);
+      self.map[i][j].sprite.anchorX = 0.5;
+      self.map[i][j].sprite.anchorY = 0.5;
+      self.map[i][j].sprite.x = (j-1)*size;
+      self.map[i][j].sprite.y = (i-1)*size;
+      self.map.group:insert( self.map[i][j].sprite );
 
-      if Maze.maze[i][j].id == "wall" then
+      if self.map[i][j].id == "wall" then
         --self.maze[i][j].shape:setFillColor(0.4,0,0.4);
         --[[physics.addBody(self.maze[i][j].shape, "static");]]
-        Maze.maze[i][j].sprite:setSequence("wall");
+        self.map[i][j].sprite:setSequence("wall");
       else
         --self.maze[i][j].shape:setFillColor(1,0.5,0);
-        Maze.maze[i][j].sprite:setSequence("path");
+        self.map[i][j].sprite:setSequence("path");
       end
 
     end

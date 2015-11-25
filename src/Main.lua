@@ -9,7 +9,7 @@ local Maze_TEST = true
 if Maze_TEST then --Maze test enabled, still on the works
   require "maze"
   local maze;
-  maze = Maze:new({rows = 10, cols = 30});
+  maze = Maze:new({rows = 12, cols = 12});
   maze:Create(true);
   print("......Loading Maze Test .....")
   print(Maze:Prepare())
@@ -17,7 +17,7 @@ if Maze_TEST then --Maze test enabled, still on the works
 else --No Tests selected, load usual module
 
   -- hide the status bar
-  display.setStatusBar( display.HiddenStatusBar )
+  --display.setStatusBar( display.HiddenStatusBar )
 
   -- require the composer library
   local composer = require "composer"

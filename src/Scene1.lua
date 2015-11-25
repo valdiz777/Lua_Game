@@ -47,7 +47,7 @@ function scene:Show( event )
 
   if event.phase == "will" then
 
-   -- maze:Spawn(sceneGroup); not yet currently working on it
+   maze:Spawn(sceneGroup); --not yet currently working on it
     --not yet player:spawn(scene_group);
 
     Runtime:addEventListener("key",maze);
