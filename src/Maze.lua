@@ -86,6 +86,7 @@ function Maze:Create(closed)
 
   --[[  Maze generation depends on the random seed, so you will get exactly
 
+
       identical maze every time you pass exactly identical seed ]]
   math.randomseed(os.time());
   Maze:Backtracker();
@@ -125,10 +126,10 @@ function Maze:Prepare(wall, passage)
 
       if (cell.south:isClosed()) then
         underline = underline .. wall .. wall;
-        self.map[y][x].id = "wall"; 
+        self.map[y][x].id = "wall";
       else
         underline = underline .. passage .. wall;
-        self.map[y][x].id = "passage"; 
+        self.map[y][x].id = "passage";
       end
     end
     result = result .. line .. "\n" .. underline .. "\n";
@@ -142,7 +143,6 @@ function Maze:Spawn(group)
 
   self.sprite = {sheet = {}};
   self.sprite.sheet = graphics.newImageSheet("images/tree.png", self.sheet_options);
-  print("SPAWNING MAZE:");
 
   self.map.group = display.newGroup();
   self.map.group.anchorY = 0.5;
@@ -161,14 +161,13 @@ function Maze:Spawn(group)
 
   local row, col = 0,0;
   local size = self.map.size;
-  print(self.map.size)
-  for i=1,self.rows do
-    for j=1,self.cols do
+  for i=1,self.cols do
+    for j=1,self.rows do
       self.map[i][j].sprite = display.newSprite(self.sprite.sheet, self.sheet_sequence);
       self.map[i][j].sprite.anchorX = 0.5;
       self.map[i][j].sprite.anchorY = 0.5;
-      self.map[i][j].sprite.x = (j-1)*size;
-      self.map[i][j].sprite.y = (i-1)*size;
+      self.map[i][j].sprite.x = (j-1)*6*size;
+      self.map[i][j].sprite.y = (i-1)*3*size;
       self.map.group:insert( self.map[i][j].sprite );
 
       if self.map[i][j].id == "wall" then
@@ -183,8 +182,8 @@ function Maze:Spawn(group)
     end
   end
 
-  self.map.group.x = Xc - (sc*size) + ((self.cols+1)*size/2);
-  self.map.group.y = Yc - (sr*size) + ((self.rows+1)*size/2);
+  self.map.group.x = Xc - (sc*size) + (self.cols);
+  self.map.group.y = Yc - (sr*size) + (self.rows);
 
   self.map.loc = {};
   self.map.loc.row = sr;

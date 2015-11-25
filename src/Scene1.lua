@@ -29,6 +29,7 @@ function scene:create( event )
   local sceneGroup = self.view;
   maze = Maze:new({rows = 12, cols = 12});
   maze:Create(true);
+  print("------SPAWNING MAZE--------");
   print(maze:Prepare());
 
   --Load the background
