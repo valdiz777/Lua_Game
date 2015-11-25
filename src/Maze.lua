@@ -129,8 +129,6 @@ function Maze:Prepare(wall, passage)
         underline = underline .. passage .. wall;
         self.map[y][x].id = "passage"; 
       end
-      --line = line .. " " .. (cell.east:isClosed() and wall or passage)
-      --underline = underline .. (cell.south:isClosed() and wall or passage) .. wall
     end
     result = result .. line .. "\n" .. underline .. "\n";
   end
