@@ -11,6 +11,7 @@ if Maze_TEST then --Maze test enabled, still on the works
   local maze;
   maze = Maze:new({rows = 30, cols = 10});
   maze:Create(true);
+  print("......Loading Maze Test .....")
   print(Maze:Prepare())
 
 else --No Tests selected, load usual module
