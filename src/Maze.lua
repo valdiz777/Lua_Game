@@ -1,7 +1,7 @@
 ---------------------------------------------------------------------------------
 --
 -- Maze.lua
--- Maze object, contains functions to create the maze @Maze:create, prepare it 
+-- Maze object, contains functions to create the maze @Maze:create, prepare it
 -- for display or testing @Maze:prepare, and display it on phone @Maze:spawn
 ---------------------------------------------------------------------------------
 require "stack"
@@ -21,7 +21,6 @@ Maze = {
     },
 
     map = {},
-    map_id = {},
     count = {},
 
     has_spawned = false,
@@ -62,6 +61,8 @@ function Maze:Create(closed)
   -- Actual maze setup
   local width = self.cols;
   local height = self.rows;
+  --print(width, height), enable on tests
+
   for y = 1, height do
     self.map[y] = {};
     for x = 1, width do
@@ -82,6 +83,7 @@ function Maze:Create(closed)
     end
   end
   --[[  Maze generation depends on the random seed, so you will get exactly
+
       identical maze every time you pass exactly identical seed ]]
   math.randomseed(os.time());
   Maze:Backtracker();
@@ -98,18 +100,18 @@ function Maze:Prepare(wall, passage)
     local truthVal = (self.map[1][i].north:isClosed()) and wall or passage;
     if (truthVal == wall) then
       verticalBorder = verticalBorder .. wall .. wall;
-      --self.map_id[1][i] = "wall"; Still working on this
+      self.map[1][i].id = "wall";
     end
     if (truthVal == passage) then
       verticalBorder = verticalBorder .. wall .. passage;
-      --self.map_id[1][i] = "passage"; Still working on this
+      self.map[1][i].id = "passage";
     end
   end
-  
-  verticalBorder = verticalBorder .. wall;
-  result = result .. verticalBorder .. "\n";
 
-  for y, row in ipairs(self) do
+  verticalBorder = verticalBorder .. wall
+  result = result .. verticalBorder .. "\n"
+
+  for y, row in ipairs(self.map) do
     local line = row[1].west:isClosed() and wall or passage;
     local underline = wall;
     local truthVal = line;
@@ -118,11 +120,11 @@ function Maze:Prepare(wall, passage)
       truthVal = (cell.east:isClosed())  and wall or passage;
       if (truthVal == wall) then
         line = line .. " " .. wall;
-        --self.map_id[1][i] = "wall"; Still working on this
+      --self.map_id[1][i] = "wall"; Still working on this
       end
       if (truthVal == passage) then
         line = line .. " " .. passage;
-        --self.map_id[1][i] = "passage"; Still working on this
+      --self.map_id[1][i] = "passage"; Still working on this
       end
 
       truthVal = (cell.south:isClosed())  and wall or passage;

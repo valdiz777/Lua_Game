@@ -9,7 +9,7 @@ local Maze_TEST = true
 if Maze_TEST then --Maze test enabled, still on the works
   require "maze"
   local maze;
-  maze = Maze:new({rows = 30, cols = 10});
+  maze = Maze:new({rows = 10, cols = 30});
   maze:Create(true);
   print("......Loading Maze Test .....")
   print(Maze:Prepare())
