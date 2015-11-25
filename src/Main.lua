@@ -4,7 +4,7 @@
 --
 ---------------------------------------------------------------------------------
 --Enable Tests here
-local Maze_TEST = true
+local Maze_TEST = false
 
 if Maze_TEST then --Maze test enabled, still on the works
   require "maze"

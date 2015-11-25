@@ -61,6 +61,7 @@ function Maze:Create(closed)
   -- Actual maze setup
   local width = self.cols;
   local height = self.rows;
+  self.map.size = self.rows;
   --print(width, height), enable on tests
 
   for y = 1, height do
@@ -143,15 +144,15 @@ function Maze:Spawn(group)
   self.sprite.sheet = graphics.newImageSheet("images/tree.png", self.sheet_options);
   print("SPAWNING MAZE:");
 
-  self.maze.group = display.newGroup();
-  self.maze.group.anchorY = 0.5;
-  self.maze.group.anchorX = 0.5;
-  self.maze.group.anchorChildren = true;
+  self.map.group = display.newGroup();
+  self.map.group.anchorY = 0.5;
+  self.map.group.anchorX = 0.5;
+  self.map.group.anchorChildren = true;
 
-  local size = self.maze.size;
-  local sr, sc = self.maze.row.count, 1;
+  local size = self.map.size;
+  local sr, sc = self.rows, 1;
 
-  for i=1, Maze.maze.col.count do
+  for i=1, self.cols do
     if self.map[sr][i].id == "start" then
       sc = i;
       print("start: ("..sr..","..sc..")\n\n");
@@ -159,8 +160,10 @@ function Maze:Spawn(group)
   end
 
   local row, col = 0,0;
-  for i=1,self.map.row.count do
-    for j=1,self.map.col.count do
+  local size = self.map.size;
+  print(self.map.size)
+  for i=1,self.rows do
+    for j=1,self.cols do
       self.map[i][j].sprite = display.newSprite(self.sprite.sheet, self.sheet_sequence);
       self.map[i][j].sprite.anchorX = 0.5;
       self.map[i][j].sprite.anchorY = 0.5;
@@ -180,15 +183,15 @@ function Maze:Spawn(group)
     end
   end
 
-  self.map.group.x = Xc - (sc*size) + ((self.map.col.count+1)*size/2);
-  self.map.group.y = Yc - (sr*size) + ((self.map.row.count+1)*size/2);
+  self.map.group.x = Xc - (sc*size) + ((self.cols+1)*size/2);
+  self.map.group.y = Yc - (sr*size) + ((self.rows+1)*size/2);
 
   self.map.loc = {};
   self.map.loc.row = sr;
   self.map.loc.col = sc;
 
   if group then
-    group:insert(Maze.map.group);
+    group:insert(self.map.group);
     self.sceneGroup = group;
   end
 end

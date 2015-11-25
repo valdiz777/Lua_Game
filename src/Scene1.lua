@@ -25,11 +25,11 @@ local maze;
 --[[--------------------------------------------]]
 
 -- initializes all core components
-function scene:Create( event )
+function scene:create( event )
   local sceneGroup = self.view;
   maze = Maze:new({rows = 12, cols = 12});
   maze:Create(true);
-  maze:Prepare();
+  print(maze:Prepare());
 
   --Load the background
   bg = {};
@@ -41,13 +41,13 @@ function scene:Create( event )
 end
 
 --Starts running everything
-function scene:Show( event )
+function scene:show( event )
   local sceneGroup = self.view;
   local phase = event.phase;
 
   if event.phase == "will" then
 
-   maze:Spawn(sceneGroup); --not yet currently working on it
+    maze:Spawn(scene_group);
     --not yet player:spawn(scene_group);
 
     Runtime:addEventListener("key",maze);
@@ -59,9 +59,9 @@ function scene:Show( event )
 end
 
 --turns off timer for button
-function scene:Hide(event)
+function scene:hide(event)
 
-  local sceneGroup = self.view;
+  local scene_group = self.view;
 
   if event.phase == "will" then
   elseif event.phase == "did" then
@@ -75,7 +75,7 @@ end
 --[[-------------------------------------]]
 
 
-function scene:Destroy( event )
+function scene:destroy( event )
   local sceneGroup = self.view
 
   -- Called prior to the removal of scene's "view" (sceneGroup)
@@ -87,10 +87,10 @@ end
 ---------------------------------------------------------------------------------
 
 -- Listener setup
-scene:addEventListener( "Create", scene )
-scene:addEventListener( "Show", scene )
-scene:addEventListener( "Hide", scene )
-scene:addEventListener( "Destroy", scene )
+scene:addEventListener( "create", scene )
+scene:addEventListener( "show", scene )
+scene:addEventListener( "hide", scene )
+scene:addEventListener( "destroy", scene )
 
 ---------------------------------------------------------------------------------
 
