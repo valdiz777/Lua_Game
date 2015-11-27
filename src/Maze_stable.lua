@@ -22,7 +22,6 @@ Maze = {
 
     map = {},
     count = {},
-    result = "",
 
     has_spawned = false,
     tag = "maze",
@@ -85,8 +84,10 @@ function Maze:Create(closed)
     end
   end
 
-  --Maze generation depends on the random seed, so you will get exactly
-  --identical maze every time you pass exactly identical seed
+  --[[  Maze generation depends on the random seed, so you will get exactly
+
+
+      identical maze every time you pass exactly identical seed ]]
   math.randomseed(os.time());
   Maze:Backtracker();
 end
@@ -94,6 +95,7 @@ end
 function Maze:Prepare(wall, passage)
   wall = wall or "x"
   passage = passage or " "
+  local result = ""
 
   local verticalBorder = ""
   for i = 1, #self.map[1] do
@@ -107,7 +109,7 @@ function Maze:Prepare(wall, passage)
     end
   end
   verticalBorder = verticalBorder .. wall;
-  self.result = self.result .. verticalBorder .. "\n";
+  result = result .. verticalBorder .. "\n";
 
   --Check for the rest of the map
   for y, row in ipairs(self.map) do
@@ -130,12 +132,11 @@ function Maze:Prepare(wall, passage)
         self.map[y][x].id = "passage";
       end
     end
-    self.result = self.result .. line .. "\n" .. underline .. "\n";
+    result = result .. line .. "\n" .. underline .. "\n";
   end
 
-  return self.result
+  return result
 end
-
 
 function Maze:Spawn(group)
   self.has_spawned = true;
@@ -144,47 +145,54 @@ function Maze:Spawn(group)
   self.sprite.sheet = graphics.newImageSheet("images/tree.png", self.sheet_options);
 
   self.map.group = display.newGroup();
-  --self.map.group.anchorY = 0.5;
-  -- self.map.group.anchorX = 0.5;
-  --self.map.group.anchorChildren = true;
+  self.map.group.anchorY = 0.5;
+  self.map.group.anchorX = 0.5;
+  self.map.group.anchorChildren = true;
 
-  --local fin = 1;
   local size = self.map.size;
-  for i = 1, #self.map[1] do
-    --create the sprite at this location
-    self.map[1][i].sprite = display.newSprite(self.sprite.sheet, self.sheet_sequence);
-    self.map[1][i].sprite.y = (i)*8.5*size;
-    --check if  wall or passage for our borders
-    if (self.map[1][i].id == "wall") then
-      self.map[1][i].sprite:setSequence("wall");
-      self.map.group:insert( self.map[1][i].sprite );
-    else
-      self.map[1][i].sprite:setSequence("passage");
-      self.map.group:insert( self.map[1][i].sprite );
+  local sr, sc = self.rows, 1;
+
+  for i=1, self.cols do
+    if self.map[sr][i].id == "start" then
+      sc = i;
+      print("start: ("..sr..","..sc..")\n\n");
     end
   end
 
-  --Check for the rest of the map
-  for y, row in ipairs(self.map) do
-    for x, cell in ipairs(row) do
-      self.map[y][x].sprite = display.newSprite(self.sprite.sheet, self.sheet_sequence);
-      self.map[y][x].sprite.y = (y) * 8.5 * size;
-      self.map[y][x].sprite.x = (x) * 3.9 * size;
-      if (self.map[y][x].id == "wall") then
-        self.map[y][x].sprite:setSequence("wall");
-        self.map.group:insert( self.map[y][x].sprite );
+  local row, col = 0,0;
+  local size = self.map.size;
+  for i=1,self.cols do
+    for j=1,self.rows do
+      self.map[i][j].sprite = display.newSprite(self.sprite.sheet, self.sheet_sequence);
+      self.map[i][j].sprite.anchorX = 0.5;
+      self.map[i][j].sprite.anchorY = 0.5;
+      self.map[i][j].sprite.x = (j-1)*6*size;
+      self.map[i][j].sprite.y = (i-1)*3*size;
+      self.map.group:insert( self.map[i][j].sprite );
+
+      if self.map[i][j].id == "wall" then
+        --self.maze[i][j].shape:setFillColor(0.4,0,0.4);
+        --[[physics.addBody(self.maze[i][j].shape, "static");]]
+        self.map[i][j].sprite:setSequence("wall");
       else
-        self.map[y][x].sprite:setSequence("passage");
-        self.map.group:insert( self.map[y][x].sprite );
+        --self.maze[i][j].shape:setFillColor(1,0.5,0);
+        self.map[i][j].sprite:setSequence("path");
       end
+
     end
   end
+
+  self.map.group.x = Xc - (sc*size) + (self.cols);
+  self.map.group.y = Yc - (sr*size) + (self.rows);
+
+  self.map.loc = {};
+  self.map.loc.row = sr;
+  self.map.loc.col = sc;
 
   if group then
     group:insert(self.map.group);
     self.sceneGroup = group;
   end
-
 end
 
 -- This function was designed to be easily replaced by the function generating Legend of Grimrock doors
